@@ -3,7 +3,7 @@
 import { openDB, type IDBPDatabase } from 'idb';
 
 const DB_NAME = 'neomonix-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export type NeomonixDB = IDBPDatabase;
 
@@ -47,6 +47,12 @@ export function getDB(): Promise<NeomonixDB> {
 
         if (!db.objectStoreNames.contains('userProgress')) {
           db.createObjectStore('userProgress', { keyPath: 'id' });
+        }
+
+        if (!db.objectStoreNames.contains('audioClips')) {
+          const store = db.createObjectStore('audioClips', { keyPath: 'id' });
+          store.createIndex('wordId', 'wordId');
+          store.createIndex('speedTag', 'speedTag');
         }
       },
     });

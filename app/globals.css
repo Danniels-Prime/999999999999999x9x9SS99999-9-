@@ -196,6 +196,48 @@ body {
 .badge-review { background: #0f172a; color: #7c3aed; border: 1px solid #4c1d95; }
 .badge-mastered { background: #052e16; color: #10b981; border: 1px solid #064e3b; }
 
+/* Phantom glitch effect */
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 95% 0); transform: translate(-3px, 0); }
+  25% { clip-path: inset(30% 0 50% 0); transform: translate(3px, 0); }
+  50% { clip-path: inset(60% 0 20% 0); transform: translate(-2px, 0); }
+  75% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 0); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { clip-path: inset(50% 0 30% 0); transform: translate(3px, 0); }
+  25% { clip-path: inset(10% 0 70% 0); transform: translate(-3px, 0); }
+  50% { clip-path: inset(75% 0 10% 0); transform: translate(2px, 0); }
+  75% { clip-path: inset(5% 0 85% 0); transform: translate(-2px, 0); }
+}
+
+.glitch-active {
+  position: relative;
+}
+
+.glitch-active::before,
+.glitch-active::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+}
+
+.glitch-active::before {
+  color: var(--accent-glow);
+  animation: glitch-1 0.8s steps(1) 1;
+}
+
+.glitch-active::after {
+  color: var(--primary-glow);
+  animation: glitch-2 0.8s steps(1) 1;
+}
+
 /* Rating button colors */
 .btn-again { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
 .btn-again:hover { background: rgba(239, 68, 68, 0.25); }

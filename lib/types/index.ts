@@ -35,6 +35,8 @@ export interface VocabCard {
   frequency: number;
   mnemonicStory: string;
   mnemonicImage?: string;
+  altMnemonicImage?: string;
+  phoneticHook?: string;
   exampleSentences: ExampleSentence[];
   tags: string[];
   // SM-2 SRS fields
@@ -46,6 +48,16 @@ export interface VocabCard {
   lastReviewedAt?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AudioClip {
+  id: string;
+  wordId: string;
+  contextSentence: string;
+  audioUrl: string;
+  speedTag: 'natural' | 'slow';
+  speakerName?: string;
+  createdAt: string;
 }
 
 export interface CardReview {

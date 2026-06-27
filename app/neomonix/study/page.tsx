@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import PageWrapper from '@/components/layout/PageWrapper';
@@ -8,6 +9,11 @@ import StudyProgress from '@/components/neomonix/StudyProgress';
 import GlowButton from '@/components/shared/GlowButton';
 import { useSRS } from '@/lib/hooks/useSRS';
 import { useProgress } from '@/lib/hooks/useProgress';
+import { getClipsByWordId } from '@/lib/db/audioClips';
+import { addXP } from '@/lib/db/progress';
+import { checkSecretHourBonus } from '@/lib/utils/phantom';
+import type { AudioClip } from '@/lib/types';
+import type { ReviewQuality } from '@/lib/srs/sm2';
 import { ArrowLeft, Trophy, RotateCcw } from 'lucide-react';
 
 export default function StudyPage() {
@@ -24,7 +30,22 @@ export default function StudyPage() {
     restartSession,
   } = useSRS('ru', progress.settings.cardsPerSession);
 
+  const [clips, setClips] = useState<AudioClip[]>([]);
+
+  useEffect(() => {
+    if (!currentCard) { setClips([]); return; }
+    getClipsByWordId(currentCard.id).then(setClips).catch(() => setClips([]));
+  }, [currentCard?.id]);
+
+  const handleRate = useCallback(async (quality: ReviewQuality) => {
+    if (currentCard && checkSecretHourBonus(currentCard)) {
+      await addXP(5);
+    }
+    await submitReview(quality);
+  }, [currentCard, submitReview]);
+
   const showRomanization = progress.settings.showRomanization;
+  const streakDays = progress.streakDays;
 
   if (loading) {
     return (
@@ -99,8 +120,10 @@ export default function StudyPage() {
         {currentCard && (
           <FlashCard
             card={currentCard}
+            clips={clips}
             showRomanization={showRomanization}
-            onRate={submitReview}
+            streakDays={streakDays}
+            onRate={handleRate}
           />
         )}
       </div>
